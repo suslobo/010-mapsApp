@@ -35,4 +35,28 @@ export class MarkersPageComponent implements AfterViewInit {
       .addTo( this.map );
  */
   }
+
+  //creamos otro método
+  createMarker() {
+    if ( !this.map ) return; //si no existe no hagamos nada
+
+    const color = '#xxxxxx'.replace(/x/g, y=>(Math.random()*16|0).toString(16));
+    const lngLat = this.map.getCenter();
+
+    this.addMarker( lngLat, color );
+  }
+
+  //crear marcadores dinámicos
+  addMarker( lngLat: LngLat, color: string ) {
+    if ( !this.map ) return; //si el mapa no está establecido no hago nada
+
+    const marker = new Marker({
+      color: color,
+      draggable: true
+
+    })
+      .setLngLat( lngLat )
+      .addTo( this.map );
+
+  }
 }
