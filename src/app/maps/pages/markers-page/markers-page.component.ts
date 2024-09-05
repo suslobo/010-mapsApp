@@ -73,7 +73,15 @@ export class MarkersPageComponent implements AfterViewInit {
 
       this.markers.push({ color, marker, });
       this.saveToLocalStorage();
+
+      //para que se queden fijos los marcadores
+      marker.on('dragend', () => this.saveToLocalStorage() );
+
+      //dragend
+
   }
+
+
 
   //para eliminar un marcador
   deleteMarker( index: number ) {
