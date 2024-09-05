@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   //como va a ser una pag. podemos obviar el selector porque no lo vamos a ocupar
   // selector: 'app-alone-page',
   standalone: true,
-  imports: [ CommonModule ],
+  // imports: [ CommonModule ],
   templateUrl: './alone-page.component.html',
   styleUrl: './alone-page.component.css'
 })
