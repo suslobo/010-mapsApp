@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { LngLat, Map, Marker } from 'mapbox-gl';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Map, LngLat, Marker } from 'mapbox-gl';
 
 interface MarkerAndColor {
   color: string;
@@ -8,21 +8,24 @@ interface MarkerAndColor {
 
 interface PlainMarker {
   color: string;
-  lngLat: number[];
+  lngLat: number[]
 }
+
 
 @Component({
   templateUrl: './markers-page.component.html',
-  styleUrl: './markers-page.component.css'
+  styleUrls: ['./markers-page.component.css']
 })
-export class MarkersPageComponent implements AfterViewInit {
+export class MarkersPageComponent {
 
   @ViewChild('map') divMap?: ElementRef;
 
   public markers: MarkerAndColor[] = [];
 
+
   public map?: Map;
-  public currentLngLat: LngLat = new LngLat(-74.9790288940621, 39.92398834469088);
+  public currentLngLat: LngLat = new LngLat(-74.10380784179445, 4.651165392795477);
+
 
   ngAfterViewInit(): void {
 
@@ -31,28 +34,26 @@ export class MarkersPageComponent implements AfterViewInit {
     this.map = new Map({
       container: this.divMap.nativeElement, // container ID
       style: 'mapbox://styles/mapbox/streets-v12', // style URL
-      center: this.currentLngLat, // starting position [lng, lat]
-      zoom: 13, // starting zoom
+      center: this.currentLngLat,
+      zoom: 13
     });
 
     this.readFromLocalStorage();
 
-    //creamos un elemento HTML
-    /* const markerHtml = document.createElement('div');
-    markerHtml.innerHTML = 'Fernando Herrera'
+    // const markerHtml = document.createElement('div');
+    // markerHtml.innerHTML = 'Fernando Herrera'
 
-    const marker = new Marker({
-      color: 'red',
-      element: markerHtml
-    })
-      .setLngLat( this.currentLngLat )
-      .addTo( this.map );
- */
+    // const marker = new Marker({
+    //   // color: 'red',
+    //   element: markerHtml
+    // })
+    //   .setLngLat( this.currentLngLat )
+    //   .addTo( this.map );
+
   }
 
-  //creamos otro método
   createMarker() {
-    if ( !this.map ) return; //si no existe no hagamos nada
+    if ( !this.map ) return;
 
     const color = '#xxxxxx'.replace(/x/g, y=>(Math.random()*16|0).toString(16));
     const lngLat = this.map.getCenter();
@@ -60,9 +61,9 @@ export class MarkersPageComponent implements AfterViewInit {
     this.addMarker( lngLat, color );
   }
 
-  //crear marcadores dinámicos
+
   addMarker( lngLat: LngLat, color: string ) {
-    if ( !this.map ) return; //si el mapa no está establecido no hago nada
+    if ( !this.map ) return;
 
     const marker = new Marker({
       color: color,
@@ -71,35 +72,29 @@ export class MarkersPageComponent implements AfterViewInit {
       .setLngLat( lngLat )
       .addTo( this.map );
 
-      this.markers.push({ color, marker, });
-      this.saveToLocalStorage();
+    this.markers.push({ color, marker, });
+    this.saveToLocalStorage();
 
-      //para que se queden fijos los marcadores
-      marker.on('dragend', () => this.saveToLocalStorage() );
+    marker.on('dragend', () => this.saveToLocalStorage() );
 
-      //dragend
-
+    // dragend
   }
 
-
-
-  //para eliminar un marcador
   deleteMarker( index: number ) {
-    this.markers[index].marker.remove(); //eliminamos el marcador del mapa
-    this.markers.splice( index, 1 ); //con doble clic eliminamos el marker de la dcha.
+    this.markers[index].marker.remove();
+    this.markers.splice( index, 1 );
   }
 
-  //para que te lleve al marcador, ejemplo el marcador puesto en colombia, pinchas en el colorMarker que lo tienes en madrid, y te lleva a Madrid con un click
-  flyTo( marker: Marker) {
+  flyTo( marker: Marker ) {
 
     this.map?.flyTo({
       zoom: 14,
       center: marker.getLngLat()
     });
+
   }
 
-  //guardar y leer del LocalStorage
-  //creamos dos métodos
+
   saveToLocalStorage() {
     const plainMarkers: PlainMarker[] = this.markers.map( ({ color, marker }) => {
       return {
@@ -107,20 +102,23 @@ export class MarkersPageComponent implements AfterViewInit {
         lngLat: marker.getLngLat().toArray()
       }
     });
+
     localStorage.setItem('plainMarkers', JSON.stringify( plainMarkers ));
+
   }
 
   readFromLocalStorage() {
     const plainMarkersString = localStorage.getItem('plainMarkers') ?? '[]';
-    const plainMarkers: PlainMarker[] = JSON.parse( plainMarkersString ); //!OJO!
+    const plainMarkers: PlainMarker[] = JSON.parse( plainMarkersString ); //! OJO!
 
     plainMarkers.forEach( ({ color, lngLat }) => {
-
       const [ lng, lat ] = lngLat;
       const coords = new LngLat( lng, lat );
 
-      this.addMarker( coords, color);
+      this.addMarker( coords, color );
     })
+
   }
+
 
 }
