@@ -72,4 +72,13 @@ export class MarkersPageComponent implements AfterViewInit {
     this.markers[index].marker.remove(); //eliminamos el marcador del mapa
     this.markers.splice( index, 1 ); //con doble clic eliminamos el marker de la dcha.
   }
+
+  //para que te lleve al marcador, ejemplo el marcador puesto en colombia, pinchas en el colorMarker que lo tienes en madrid, y te lleva a Madrid con un click
+  flyTo( marker: Marker) {
+
+    this.map?.flyTo({
+      zoom: 14,
+      center: marker.getLngLat()
+    });
+  }
 }
